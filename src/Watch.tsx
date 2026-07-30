@@ -83,11 +83,7 @@ export default function Watch() {
   }
 
   return (
-    <div
-      className={`w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center justify-center ${
-        status === 'live' ? 'force-landscape' : ''
-      }`}
-    >
+    <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
       {status === 'connecting' && <p className="text-neutral-400 text-sm">Connecting to room {roomCode}…</p>}
 
       {status === 'not-found' && (

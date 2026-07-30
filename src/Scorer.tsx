@@ -353,7 +353,7 @@ function Scorer() {
   }
 
   return (
-    <div className="force-landscape w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center justify-center">
+    <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
       <ScoreboardView state={state} onPoint={(team) => dispatch({ type: 'POINT', team })} />
 
       <div className="flex gap-3 w-full max-w-[420px]">
