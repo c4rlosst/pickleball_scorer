@@ -33,7 +33,7 @@ export default function StatCard({ value, label, className }: StatCardProps) {
         />
         {/* Value */}
         <motion.div
-          className="text-5xl font-extrabold bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent"
+          className="text-8xl font-extrabold bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent"
           animate={{
             textShadow: [
               "0 0 10px rgba(255,255,255,0.6)",
@@ -46,7 +46,7 @@ export default function StatCard({ value, label, className }: StatCardProps) {
           {value}
         </motion.div>
         {/* Label */}
-        <div className="mt-3 text-sm tracking-wide text-neutral-400">{label}</div>
+        <div className="mt-3 text-xl font-semibold tracking-wide text-neutral-300">{label}</div>
         {/* Subtle lines */}
         <motion.div
           className="absolute top-[12%] w-[80%] h-[1px] bg-gradient-to-r from-white/30 to-transparent"
