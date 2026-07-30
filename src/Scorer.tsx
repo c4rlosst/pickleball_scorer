@@ -158,7 +158,7 @@ function Segmented<T extends string | number>({
           onClick={() => onChange(option.value)}
           className={`flex-1 py-2.5 rounded-lg text-sm border transition-colors ${
             value === option.value
-              ? 'bg-green-600 border-green-600 text-white font-semibold'
+              ? 'bg-amber-500 border-amber-500 text-neutral-950 font-semibold'
               : 'bg-black/40 border-white/10 text-neutral-300 hover:border-white/30'
           }`}
         >
@@ -211,7 +211,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             type="checkbox"
             checked={winByTwo}
             onChange={(e) => setWinByTwo(e.target.checked)}
-            className="accent-green-600"
+            className="accent-amber-500"
           />
           Win by 2
         </label>
@@ -231,7 +231,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       <button
         type="button"
         onClick={() => onStart({ matchType, pointTarget, winByTwo, startingServer })}
-        className="mt-2 py-3.5 rounded-[10px] bg-green-600 hover:bg-green-500 text-white font-semibold transition-colors"
+        className="mt-2 py-3.5 rounded-[10px] bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold transition-colors"
       >
         Start Game
       </button>
@@ -306,7 +306,7 @@ function Scorer() {
       </div>
 
       {state.gameOver && state.winner !== null && (
-        <div className="w-full text-center py-3 rounded-lg bg-green-950 border border-green-800 text-green-400 font-bold text-lg">
+        <div className="w-full text-center py-3 rounded-lg bg-amber-950 border border-amber-800 text-amber-400 font-bold text-lg">
           {labels[state.winner]} wins!
         </div>
       )}

@@ -18,7 +18,7 @@ function App() {
             onClick={() => setActiveTab(tab.id)}
             className={`px-[18px] py-3 text-[15px] font-medium border-b-[3px] transition-colors ${
               activeTab === tab.id
-                ? 'text-green-500 border-green-500 font-semibold'
+                ? 'text-amber-400 border-amber-400 font-semibold'
                 : 'text-neutral-400 border-transparent hover:text-neutral-200'
             }`}
           >
