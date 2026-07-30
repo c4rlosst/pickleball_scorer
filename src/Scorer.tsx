@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react'
+import { useReducer, useState, type ReactNode } from 'react'
 import StatCard from '@/components/ui/stat-card'
 
 type MatchType = 'singles' | 'doubles'
@@ -159,12 +159,21 @@ function Segmented<T extends string | number>({
           className={`flex-1 py-2.5 rounded-lg text-sm border transition-colors ${
             value === option.value
               ? 'bg-green-600 border-green-600 text-white font-semibold'
-              : 'bg-neutral-900 border-neutral-700 text-neutral-300 hover:border-neutral-500'
+              : 'bg-black/40 border-white/10 text-neutral-300 hover:border-white/30'
           }`}
         >
           {option.label}
         </button>
       ))}
+    </div>
+  )
+}
+
+function Panel({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black p-4">
+      <label className="text-sm font-semibold tracking-wide text-neutral-400">{label}</label>
+      {children}
     </div>
   )
 }
@@ -177,11 +186,10 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   const labels = TEAM_LABELS[matchType]
 
   return (
-    <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-6">
+    <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
       <h2 className="text-center text-white text-xl font-semibold">New Game</h2>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-neutral-400">Match Type</label>
+      <Panel label="Match Type">
         <Segmented
           value={matchType}
           onChange={setMatchType}
@@ -190,29 +198,26 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             { value: 'doubles', label: 'Doubles' },
           ]}
         />
-      </div>
+      </Panel>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-neutral-400">Play To</label>
+      <Panel label="Play To">
         <Segmented
           value={pointTarget}
           onChange={setPointTarget}
           options={[11, 15, 21].map((n) => ({ value: n, label: String(n) }))}
         />
-      </div>
+        <label className="flex items-center gap-2 text-sm text-neutral-200">
+          <input
+            type="checkbox"
+            checked={winByTwo}
+            onChange={(e) => setWinByTwo(e.target.checked)}
+            className="accent-green-600"
+          />
+          Win by 2
+        </label>
+      </Panel>
 
-      <label className="flex items-center gap-2 text-sm text-neutral-200">
-        <input
-          type="checkbox"
-          checked={winByTwo}
-          onChange={(e) => setWinByTwo(e.target.checked)}
-          className="accent-green-600"
-        />
-        Win by 2
-      </label>
-
-      <div className="flex flex-col gap-2">
-        <label className="text-sm text-neutral-400">First Serve</label>
+      <Panel label="First Serve">
         <Segmented
           value={startingServer}
           onChange={setStartingServer}
@@ -221,7 +226,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             { value: 1 as Team, label: labels[1] },
           ]}
         />
-      </div>
+      </Panel>
 
       <button
         type="button"
