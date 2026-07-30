@@ -261,13 +261,26 @@ function Scorer() {
           />
         </button>
 
-        <div className="flex flex-col items-center justify-center gap-1 w-[140px] h-[100px] rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center">
-          <span className="text-xl">{'\u{1F3D3}'}</span>
+        <div className="flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center">
           <span className="text-sm font-semibold text-amber-400">
             {labels[state.servingTeam]}
           </span>
-          {state.matchType === 'doubles' && (
-            <span className="text-xs text-neutral-400">Server {state.server}</span>
+          {state.matchType === 'doubles' ? (
+            <>
+              <span className="text-7xl font-extrabold leading-none text-white">
+                {state.server}
+              </span>
+              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
+                SERVER
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-6xl leading-none">{'\u{1F3D3}'}</span>
+              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
+                SERVING
+              </span>
+            </>
           )}
         </div>
 
