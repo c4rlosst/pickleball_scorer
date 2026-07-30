@@ -22,6 +22,7 @@ interface TeamAccent {
   hoverText: string
   pill: string
   pillBorder: string
+  accent: string
 }
 
 const TEAM_ACCENT: [TeamAccent, TeamAccent] = [
@@ -36,6 +37,7 @@ const TEAM_ACCENT: [TeamAccent, TeamAccent] = [
     hoverText: 'hover:text-[#ff7a00]',
     pill: 'bg-gradient-to-b from-[#ff9c33] to-[#ff7a00] shadow-[0_2px_16px_rgba(255,122,0,0.55)]',
     pillBorder: 'border-[#ff7a00]',
+    accent: 'accent-[#ff7a00]',
   },
   {
     hex: '#c6ff00',
@@ -48,6 +50,7 @@ const TEAM_ACCENT: [TeamAccent, TeamAccent] = [
     hoverText: 'hover:text-[#c6ff00]',
     pill: 'bg-gradient-to-b from-[#d8ff4d] to-[#c6ff00] shadow-[0_2px_16px_rgba(198,255,0,0.55)]',
     pillBorder: 'border-[#c6ff00]',
+    accent: 'accent-[#c6ff00]',
   },
 ]
 
@@ -351,6 +354,8 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
     namesB.length > 0 ? namesB.join(' & ') : defaultLabels[1],
   ]
 
+  const activeAccent = TEAM_ACCENT[startingServer]
+
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
       <h2 className="text-center text-white text-xl font-semibold">New Game</h2>
@@ -363,6 +368,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             { value: 'singles', label: 'Singles' },
             { value: 'doubles', label: 'Doubles' },
           ]}
+          pillVariants={[activeAccent.pill, activeAccent.pill]}
         />
       </Panel>
 
@@ -371,13 +377,14 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
           value={pointTarget}
           onChange={setPointTarget}
           options={[11, 15, 21].map((n) => ({ value: n, label: String(n) }))}
+          pillVariants={[activeAccent.pill, activeAccent.pill, activeAccent.pill]}
         />
         <label className="flex items-center gap-2 text-sm text-neutral-200">
           <input
             type="checkbox"
             checked={winByTwo}
             onChange={(e) => setWinByTwo(e.target.checked)}
-            className="w-[18px] h-[18px] accent-amber-500 cursor-pointer"
+            className={`w-[18px] h-[18px] cursor-pointer transition-colors duration-300 ${activeAccent.accent}`}
           />
           Win by 2
         </label>
