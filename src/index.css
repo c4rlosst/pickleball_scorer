@@ -26,3 +26,20 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 0.25s ease-out;
 }
+
+/* Rotates the live scoreboard into a landscape layout on narrow, portrait
+   phone screens, since the 3-card row is cramped in portrait. Pure CSS so it
+   works even where the Fullscreen/Screen Orientation JS APIs don't (iOS
+   Safari, in-app webviews like Messenger/Instagram, etc). No-ops on tablets,
+   desktop, or anything already in landscape. */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  .force-landscape {
+    position: fixed;
+    inset: 0;
+    width: 100vh;
+    height: 100vw;
+    transform-origin: top left;
+    transform: rotate(90deg) translate(0, -100%);
+    overflow-y: auto;
+  }
+}
