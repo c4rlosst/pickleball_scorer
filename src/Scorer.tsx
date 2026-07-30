@@ -4,6 +4,7 @@ import { ref, set } from 'firebase/database'
 import ScoreboardView from './ScoreboardView'
 import PickleballIcon from '@/components/PickleballIcon'
 import MeshBackground from './MeshBackground'
+import { useAccent } from './AccentContext'
 import { database, isLiveSyncConfigured } from '@/lib/firebase'
 import { generateRoomCode } from '@/lib/roomCode'
 import {
@@ -183,6 +184,11 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   ]
 
   const activeAccent = TEAM_ACCENT[startingServer]
+  const { setAccent } = useAccent()
+
+  useEffect(() => {
+    setAccent(activeAccent)
+  }, [activeAccent, setAccent])
 
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
@@ -317,12 +323,18 @@ function LiveShare({ roomCode, onStop }: { roomCode: string | null; onStop: () =
 function Scorer() {
   const [state, dispatch] = useReducer(reducer, null)
   const [roomCode, setRoomCode] = useState<string | null>(null)
+  const { setAccent } = useAccent()
 
   // Push the latest state to Firebase whenever it changes while live sharing.
   useEffect(() => {
     if (!roomCode || !state || !database) return
     void set(ref(database, `games/${roomCode}`), toPublicState(state))
   }, [roomCode, state])
+
+  // Keep the header/tab accent in sync with whichever team is currently serving.
+  useEffect(() => {
+    if (state) setAccent(TEAM_ACCENT[state.servingTeam])
+  }, [state, setAccent])
 
   const goLive = () => {
     if (!database) return

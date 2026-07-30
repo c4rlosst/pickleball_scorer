@@ -5,6 +5,7 @@ import Watch from './Watch'
 import About from './About'
 import Privacy from './Privacy'
 import IntroRoll from './IntroRoll'
+import { useAccent } from './AccentContext'
 
 const TABS = [
   { id: 'scorer', label: 'Scorer' },
@@ -18,6 +19,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabId>(TABS[0].id)
   const [page, setPage] = useState<Page>(null)
   const [showIntro, setShowIntro] = useState(true)
+  const { accent } = useAccent()
 
   return (
     <div className="font-sans min-h-screen flex flex-col bg-black text-neutral-100">
@@ -25,10 +27,7 @@ function App() {
         {showIntro && <IntroRoll onDone={() => setShowIntro(false)} />}
       </AnimatePresence>
 
-      <nav className="relative flex items-center gap-1 px-3 bg-black border-b border-neutral-800">
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[15px] font-bold tracking-wide text-neutral-100 pointer-events-none">
-          picklepoints
-        </span>
+      <nav className="flex items-center justify-center gap-1 px-3 bg-black border-b border-neutral-800">
         {TABS.map((tab) => (
           <button
             key={tab.id}
@@ -39,7 +38,7 @@ function App() {
             }}
             className={`px-[18px] py-3 text-[15px] font-medium border-b-[3px] transition-all duration-200 active:scale-95 ${
               page === null && activeTab === tab.id
-                ? 'text-amber-400 border-amber-400 font-semibold'
+                ? `${accent.text} ${accent.border} font-semibold`
                 : 'text-neutral-400 border-transparent hover:text-neutral-200'
             }`}
           >

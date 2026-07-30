@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { ref, onValue, off } from 'firebase/database'
 import ScoreboardView from './ScoreboardView'
 import { database, isLiveSyncConfigured } from '@/lib/firebase'
-import type { PublicGameState } from './gameTypes'
+import { TEAM_ACCENT, type PublicGameState } from './gameTypes'
+import { useAccent } from './AccentContext'
 
 function CodeInput({ onJoin }: { onJoin: (code: string) => void }) {
   const [code, setCode] = useState('')
@@ -41,6 +42,11 @@ export default function Watch() {
   const [remoteState, setRemoteState] = useState<PublicGameState | null>(null)
   const [status, setStatus] = useState<'connecting' | 'live' | 'not-found'>('connecting')
   const unsubscribeRef = useRef<(() => void) | null>(null)
+  const { setAccent } = useAccent()
+
+  useEffect(() => {
+    if (remoteState) setAccent(TEAM_ACCENT[remoteState.servingTeam])
+  }, [remoteState, setAccent])
 
   useEffect(() => {
     if (!roomCode || !database) return
