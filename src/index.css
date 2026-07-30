@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    system-ui, "Segoe UI", Roboto, sans-serif;
+  /* True SF Pro renders on Apple devices via -apple-system/BlinkMacSystemFont.
+     Everywhere else (Windows, Linux, Android) falls back to Inter, a
+     free variable font designed to closely match SF Pro's look. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter Variable", "Segoe UI", Roboto,
+    sans-serif;
 }
 
 body {
