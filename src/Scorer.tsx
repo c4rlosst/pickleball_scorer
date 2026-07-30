@@ -188,7 +188,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
         className={`text-center text-xl font-semibold transition-colors duration-300 ${activeAccent.text}`}
         style={{ textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90` }}
       >
-        New Game
+        age is just a number, and so is the score.
       </h2>
 
       <Panel label="Match Type">
