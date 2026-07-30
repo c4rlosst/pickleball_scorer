@@ -1,6 +1,7 @@
 import { useLayoutEffect, useReducer, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import StatCard from '@/components/ui/stat-card'
+import PickleballIcon from '@/components/PickleballIcon'
 
 type MatchType = 'singles' | 'doubles'
 type Team = 0 | 1
@@ -483,7 +484,7 @@ function Scorer() {
             </>
           ) : (
             <>
-              <span className="text-6xl leading-none">{'\u{1F3D3}'}</span>
+              <PickleballIcon className="w-16 h-16" />
               <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
                 serving
               </span>
