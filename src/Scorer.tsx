@@ -245,7 +245,7 @@ function Scorer() {
 
   return (
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
-      <div className="flex flex-col sm:flex-row gap-4 flex-wrap items-center justify-center">
+      <div className="flex flex-col xl:flex-row gap-4 items-center justify-center">
         <button
           type="button"
           onClick={() => dispatch({ type: 'POINT', team: 0 })}
