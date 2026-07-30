@@ -10,7 +10,7 @@ export default function StatCard({ value, label, className }: StatCardProps) {
   return (
     <div
       className={cn(
-        "relative w-[300px] h-[250px] rounded-xl overflow-hidden p-[2px] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black",
+        "relative w-[300px] h-[250px] rounded-xl overflow-hidden p-[2px] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black transition-shadow duration-300 ease-out",
         className
       )}
     >

@@ -255,7 +255,7 @@ function Scorer() {
           type="button"
           onClick={() => dispatch({ type: 'POINT', team: 0 })}
           disabled={state.gameOver}
-          className="block cursor-pointer disabled:opacity-70 disabled:cursor-default"
+          className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
         >
           <StatCard
             value={String(state.scores[0])}
@@ -293,7 +293,7 @@ function Scorer() {
           type="button"
           onClick={() => dispatch({ type: 'POINT', team: 1 })}
           disabled={state.gameOver}
-          className="block cursor-pointer disabled:opacity-70 disabled:cursor-default"
+          className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
         >
           <StatCard
             value={String(state.scores[1])}
@@ -306,7 +306,7 @@ function Scorer() {
       </div>
 
       {state.gameOver && state.winner !== null && (
-        <div className="w-full text-center py-3 rounded-lg bg-amber-950 border border-amber-800 text-amber-400 font-bold text-lg">
+        <div className="w-full text-center py-3 rounded-lg bg-amber-950 border border-amber-800 text-amber-400 font-bold text-lg animate-fade-in-up">
           {labels[state.winner]} wins!
         </div>
       )}
@@ -316,14 +316,14 @@ function Scorer() {
           type="button"
           onClick={() => dispatch({ type: 'UNDO' })}
           disabled={state.history.length === 0}
-          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-neutral-500 disabled:opacity-50 disabled:cursor-default transition-colors"
+          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-amber-400/60 hover:text-amber-400 hover:bg-neutral-800 active:scale-[0.96] disabled:opacity-50 disabled:cursor-default disabled:active:scale-100 transition-all duration-150"
         >
           Undo
         </button>
         <button
           type="button"
           onClick={() => dispatch({ type: 'NEW_GAME' })}
-          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-neutral-500 transition-colors"
+          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-amber-400/60 hover:text-amber-400 hover:bg-neutral-800 active:scale-[0.96] transition-all duration-150"
         >
           New Game
         </button>
