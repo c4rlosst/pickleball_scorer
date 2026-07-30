@@ -156,10 +156,10 @@ function Segmented<T extends string | number>({
           key={String(option.value)}
           type="button"
           onClick={() => onChange(option.value)}
-          className={`flex-1 py-2.5 rounded-lg text-sm border transition-colors ${
+          className={`flex-1 py-2.5 rounded-lg text-sm border transition-all duration-150 active:scale-[0.96] ${
             value === option.value
-              ? 'bg-amber-500 border-amber-500 text-neutral-950 font-semibold'
-              : 'bg-black/40 border-white/10 text-neutral-300 hover:border-white/30'
+              ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-amber-300 text-neutral-950 font-semibold shadow-[0_2px_12px_rgba(245,158,11,0.5)]'
+              : 'bg-gradient-to-b from-white/[0.06] to-black/40 border-white/10 text-neutral-300 shadow-inner shadow-black/40 hover:border-white/25 hover:from-white/[0.1]'
           }`}
         >
           {option.label}
@@ -211,7 +211,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             type="checkbox"
             checked={winByTwo}
             onChange={(e) => setWinByTwo(e.target.checked)}
-            className="accent-amber-500"
+            className="w-[18px] h-[18px] accent-amber-500 cursor-pointer"
           />
           Win by 2
         </label>
@@ -231,7 +231,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       <button
         type="button"
         onClick={() => onStart({ matchType, pointTarget, winByTwo, startingServer })}
-        className="mt-2 py-3.5 rounded-[10px] bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold transition-colors"
+        className="mt-2 py-4 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-neutral-950 font-bold text-lg shadow-[0_4px_24px_rgba(245,158,11,0.45)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.6)] active:scale-[0.98] transition-all duration-150"
       >
         Start Game
       </button>
