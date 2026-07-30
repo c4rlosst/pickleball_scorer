@@ -246,31 +246,45 @@ function Scorer() {
   return (
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
       <div className="flex flex-col sm:flex-row gap-4 flex-wrap items-center justify-center">
-        {([0, 1] as const).map((team) => (
-          <div key={team} className="flex flex-col items-center gap-2">
-            <button
-              type="button"
-              onClick={() => dispatch({ type: 'POINT', team })}
-              disabled={state.gameOver}
-              className="block cursor-pointer disabled:opacity-70 disabled:cursor-default"
-            >
-              <StatCard
-                value={String(state.scores[team])}
-                label={labels[team]}
-                className={
-                  state.servingTeam === team
-                    ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black'
-                    : ''
-                }
-              />
-            </button>
-            <span className="h-6 text-sm font-semibold text-amber-400">
-              {state.servingTeam === team
-                ? `${'\u{1F3D3}'} ${state.matchType === 'doubles' ? `Server ${state.server}` : 'Serving'}`
-                : ''}
-            </span>
-          </div>
-        ))}
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'POINT', team: 0 })}
+          disabled={state.gameOver}
+          className="block cursor-pointer disabled:opacity-70 disabled:cursor-default"
+        >
+          <StatCard
+            value={String(state.scores[0])}
+            label={labels[0]}
+            className={
+              state.servingTeam === 0 ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black' : ''
+            }
+          />
+        </button>
+
+        <div className="flex flex-col items-center justify-center gap-1 w-[140px] h-[100px] rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center">
+          <span className="text-xl">{'\u{1F3D3}'}</span>
+          <span className="text-sm font-semibold text-amber-400">
+            {labels[state.servingTeam]}
+          </span>
+          {state.matchType === 'doubles' && (
+            <span className="text-xs text-neutral-400">Server {state.server}</span>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'POINT', team: 1 })}
+          disabled={state.gameOver}
+          className="block cursor-pointer disabled:opacity-70 disabled:cursor-default"
+        >
+          <StatCard
+            value={String(state.scores[1])}
+            label={labels[1]}
+            className={
+              state.servingTeam === 1 ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black' : ''
+            }
+          />
+        </button>
       </div>
 
       {state.gameOver && state.winner !== null && (
