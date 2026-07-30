@@ -185,11 +185,8 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
       <h2
-        className={`text-center text-2xl whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
-        style={{
-          fontFamily: "'Kaushan Script', cursive",
-          textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90`,
-        }}
+        className={`text-center text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
+        style={{ textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90` }}
       >
         "age is just a number, and so is the score."
       </h2>
