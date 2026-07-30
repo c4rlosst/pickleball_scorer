@@ -1,36 +1,69 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
+interface Blob {
+  size: number
+  top?: string
+  left?: string
+  bottom?: string
+  right?: string
+  opacity: number
+  depth: number
+  driftX: number[]
+  driftY: number[]
+  duration: number
+}
+
+const BLOBS: Blob[] = [
+  { size: 600, top: '-15%', left: '-10%', opacity: 0.4, depth: 45, driftX: [0, 30, -15, 0], driftY: [0, 20, 30, 0], duration: 14 },
+  { size: 460, bottom: '-12%', right: '-8%', opacity: 0.3, depth: -60, driftX: [0, -25, 18, 0], driftY: [0, -20, -25, 0], duration: 17 },
+  { size: 320, top: '35%', left: '40%', opacity: 0.22, depth: 35, driftX: [0, 22, -22, 0], driftY: [0, -22, 22, 0], duration: 19 },
+]
+
 export default function MeshBackground({ colorHex }: { colorHex: string }) {
+  const [mouse, setMouse] = useState({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      setMouse({
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: (e.clientY / window.innerHeight) * 2 - 1,
+      })
+    }
+    window.addEventListener('pointermove', handleMove)
+    return () => window.removeEventListener('pointermove', handleMove)
+  }, [])
+
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <motion.div
-        className="absolute w-[70vw] h-[70vw] max-w-[600px] max-h-[600px] rounded-full blur-3xl opacity-40"
-        style={{ backgroundColor: colorHex, top: '-15%', left: '-10%', transition: 'background-color 0.7s ease' }}
-        animate={{ x: ['0%', '15%', '-5%', '0%'], y: ['0%', '10%', '15%', '0%'] }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[55vw] h-[55vw] max-w-[460px] max-h-[460px] rounded-full blur-3xl opacity-30"
-        style={{
-          backgroundColor: colorHex,
-          bottom: '-12%',
-          right: '-8%',
-          transition: 'background-color 0.7s ease',
-        }}
-        animate={{ x: ['0%', '-10%', '8%', '0%'], y: ['0%', '-8%', '-12%', '0%'] }}
-        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[40vw] h-[40vw] max-w-[320px] max-h-[320px] rounded-full blur-3xl opacity-20"
-        style={{
-          backgroundColor: colorHex,
-          top: '35%',
-          left: '40%',
-          transition: 'background-color 0.7s ease',
-        }}
-        animate={{ x: ['0%', '10%', '-10%', '0%'], y: ['0%', '-10%', '10%', '0%'] }}
-        transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {BLOBS.map((b, i) => (
+        <div
+          key={i}
+          className="absolute"
+          style={{
+            top: b.top,
+            left: b.left,
+            bottom: b.bottom,
+            right: b.right,
+            width: b.size,
+            height: b.size,
+            maxWidth: '70vw',
+            maxHeight: '70vw',
+            transform: `translate(${mouse.x * b.depth}px, ${mouse.y * b.depth}px)`,
+            transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)',
+          }}
+        >
+          <motion.div
+            className="w-full h-full rounded-full blur-3xl"
+            style={{ backgroundColor: colorHex, opacity: b.opacity, transition: 'background-color 0.7s ease' }}
+            animate={{
+              x: b.driftX.map((v) => `${v}%`),
+              y: b.driftY.map((v) => `${v}%`),
+            }}
+            transition={{ duration: b.duration, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+      ))}
 
       {/* subtle grain texture, matching the mesh-gradient reference look */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.06]">
