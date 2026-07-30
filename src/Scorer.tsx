@@ -184,7 +184,12 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
 
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
-      <h2 className="text-center text-white text-xl font-semibold">New Game</h2>
+      <h2
+        className="text-center text-white text-xl font-semibold transition-all duration-300"
+        style={{ textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90` }}
+      >
+        New Game
+      </h2>
 
       <Panel label="Match Type">
         <Segmented
