@@ -1,193 +1,18 @@
-import { useLayoutEffect, useReducer, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useReducer, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
-import StatCard from '@/components/ui/stat-card'
-import PickleballIcon from '@/components/PickleballIcon'
-
-type MatchType = 'singles' | 'doubles'
-type Team = 0 | 1
-
-const TEAM_LABELS: Record<MatchType, [string, string]> = {
-  singles: ['Player A', 'Player B'],
-  doubles: ['Team A', 'Team B'],
-}
-
-// Team 1 = neon orange, Team 2 = neon green (like a pickleball ball)
-interface TeamAccent {
-  hex: string
-  ring: string
-  text: string
-  border: string
-  glow: string
-  bannerBg: string
-  hoverBorder: string
-  hoverText: string
-  pill: string
-  pillBorder: string
-  accent: string
-}
-
-const TEAM_ACCENT: [TeamAccent, TeamAccent] = [
-  {
-    hex: '#ff7a00',
-    ring: 'ring-[#ff7a00]',
-    text: 'text-[#ff7a00]',
-    border: 'border-[#ff7a00]/50',
-    glow: 'shadow-[0_0_24px_rgba(255,122,0,0.55)]',
-    bannerBg: 'bg-[#3a1a00]',
-    hoverBorder: 'hover:border-[#ff7a00]/60',
-    hoverText: 'hover:text-[#ff7a00]',
-    pill: 'bg-gradient-to-b from-[#ff9c33] to-[#ff7a00] shadow-[0_2px_16px_rgba(255,122,0,0.55)]',
-    pillBorder: 'border-[#ff7a00]',
-    accent: 'accent-[#ff7a00]',
-  },
-  {
-    hex: '#c6ff00',
-    ring: 'ring-[#c6ff00]',
-    text: 'text-[#c6ff00]',
-    border: 'border-[#c6ff00]/50',
-    glow: 'shadow-[0_0_24px_rgba(198,255,0,0.55)]',
-    bannerBg: 'bg-[#1f2900]',
-    hoverBorder: 'hover:border-[#c6ff00]/60',
-    hoverText: 'hover:text-[#c6ff00]',
-    pill: 'bg-gradient-to-b from-[#d8ff4d] to-[#c6ff00] shadow-[0_2px_16px_rgba(198,255,0,0.55)]',
-    pillBorder: 'border-[#c6ff00]',
-    accent: 'accent-[#c6ff00]',
-  },
-]
-
-interface SetupOptions {
-  matchType: MatchType
-  pointTarget: number
-  winByTwo: boolean
-  startingServer: Team
-  labels: [string, string]
-}
-
-interface Snapshot {
-  scores: [number, number]
-  servingTeam: Team
-  server: 1 | 2
-  firstServeOfGame: boolean
-  gameOver: boolean
-  winner: Team | null
-}
-
-interface GameState extends Snapshot {
-  matchType: MatchType
-  pointTarget: number
-  winByTwo: boolean
-  labels: [string, string]
-  history: Snapshot[]
-}
-
-type Action =
-  | { type: 'SETUP'; setup: SetupOptions }
-  | { type: 'POINT'; team: Team }
-  | { type: 'UNDO' }
-  | { type: 'NEW_GAME' }
-
-function snapshot(state: GameState): Snapshot {
-  return {
-    scores: [...state.scores],
-    servingTeam: state.servingTeam,
-    server: state.server,
-    firstServeOfGame: state.firstServeOfGame,
-    gameOver: state.gameOver,
-    winner: state.winner,
-  }
-}
-
-function createGameState({ matchType, pointTarget, winByTwo, startingServer, labels }: SetupOptions): GameState {
-  return {
-    matchType,
-    pointTarget,
-    winByTwo,
-    labels,
-    scores: [0, 0],
-    servingTeam: startingServer,
-    server: 2, // start-of-game exception: first serving side only gets one server turn
-    firstServeOfGame: true,
-    gameOver: false,
-    winner: null,
-    history: [],
-  }
-}
-
-function checkWin(scores: [number, number], pointTarget: number, winByTwo: boolean): Team | null {
-  const [a, b] = scores
-  if (a === b) return null
-  const leader: Team = a > b ? 0 : 1
-  const leadScore = scores[leader]
-  const otherScore = scores[leader === 0 ? 1 : 0]
-  if (leadScore >= pointTarget && (!winByTwo || leadScore - otherScore >= 2)) {
-    return leader
-  }
-  return null
-}
-
-function reducer(state: GameState | null, action: Action): GameState | null {
-  switch (action.type) {
-    case 'SETUP':
-      return createGameState(action.setup)
-
-    case 'POINT': {
-      if (!state || state.gameOver) return state
-      const team = action.team
-      const prev = snapshot(state)
-      const scores: [number, number] = [...state.scores]
-      let { servingTeam, server, firstServeOfGame } = state
-
-      if (team === servingTeam) {
-        // serving side won the rally: point scored, same server continues
-        scores[team] += 1
-      } else if (state.matchType === 'singles') {
-        // singles: no server rotation, immediate side-out
-        servingTeam = team
-      } else if (firstServeOfGame) {
-        // doubles start-of-game exception: immediate side-out on first loss
-        servingTeam = team
-        server = 1
-        firstServeOfGame = false
-      } else if (server === 1) {
-        // first server lost the rally: second server on same team serves next
-        server = 2
-      } else {
-        // second server lost the rally: side-out to the other team
-        servingTeam = team
-        server = 1
-      }
-
-      const winner = checkWin(scores, state.pointTarget, state.winByTwo)
-
-      return {
-        ...state,
-        scores,
-        servingTeam,
-        server,
-        firstServeOfGame,
-        gameOver: winner !== null,
-        winner,
-        history: [...state.history, prev],
-      }
-    }
-
-    case 'UNDO': {
-      if (!state || state.history.length === 0) return state
-      const prev = state.history[state.history.length - 1]
-      return {
-        ...state,
-        ...prev,
-        history: state.history.slice(0, -1),
-      }
-    }
-
-    case 'NEW_GAME':
-      return null
-
-    default:
-      return state
-  }
-}
+import { ref, set } from 'firebase/database'
+import ScoreboardView from './ScoreboardView'
+import { database, isLiveSyncConfigured } from '@/lib/firebase'
+import { generateRoomCode } from '@/lib/roomCode'
+import {
+  TEAM_ACCENT,
+  TEAM_LABELS,
+  reducer,
+  toPublicState,
+  type MatchType,
+  type SetupOptions,
+  type Team,
+} from './gameTypes'
 
 function Segmented<T extends string | number>({
   options,
@@ -438,116 +263,78 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   )
 }
 
+function LiveShare({ roomCode, onStop }: { roomCode: string | null; onStop: () => void }) {
+  const [copied, setCopied] = useState(false)
+
+  if (!isLiveSyncConfigured) {
+    return (
+      <div className="w-full max-w-[420px] rounded-[10px] border border-neutral-700 bg-neutral-900 px-3 py-2 text-center text-xs text-neutral-500">
+        Live sync isn't configured yet — add your Firebase project keys to .env to enable it.
+      </div>
+    )
+  }
+
+  if (!roomCode) return null
+
+  const copyCode = () => {
+    navigator.clipboard?.writeText(roomCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
+
+  return (
+    <div className="w-full max-w-[420px] flex items-center justify-between gap-3 rounded-[10px] border border-lime-400/40 bg-lime-500/10 px-4 py-3">
+      <div>
+        <div className="text-[11px] font-semibold tracking-widest text-lime-300">live · room code</div>
+        <button
+          type="button"
+          onClick={copyCode}
+          className="text-2xl font-extrabold tracking-[0.2em] text-lime-300"
+        >
+          {roomCode}
+        </button>
+        {copied && <div className="text-[11px] text-lime-400">Copied!</div>}
+      </div>
+      <button
+        type="button"
+        onClick={onStop}
+        className="rounded-lg border border-neutral-700 px-3 py-1.5 text-xs text-neutral-300 hover:border-red-400/60 hover:text-red-400 transition-colors"
+      >
+        Stop sharing
+      </button>
+    </div>
+  )
+}
+
 function Scorer() {
   const [state, dispatch] = useReducer(reducer, null)
+  const [roomCode, setRoomCode] = useState<string | null>(null)
+
+  // Push the latest state to Firebase whenever it changes while live sharing.
+  useEffect(() => {
+    if (!roomCode || !state || !database) return
+    void set(ref(database, `games/${roomCode}`), toPublicState(state))
+  }, [roomCode, state])
+
+  const goLive = () => {
+    if (!database) return
+    setRoomCode(generateRoomCode())
+  }
+
+  const stopSharing = () => {
+    if (roomCode && database) {
+      void set(ref(database, `games/${roomCode}`), null)
+    }
+    setRoomCode(null)
+  }
 
   if (!state) {
     return <Setup onStart={(setup) => dispatch({ type: 'SETUP', setup })} />
   }
 
-  const labels = state.labels
-
-  // Only the serving team can score the next rally, so they're the only one
-  // who can be at match point.
-  const hypotheticalScores: [number, number] = [...state.scores]
-  hypotheticalScores[state.servingTeam] += 1
-  const matchPointTeam: Team | null =
-    !state.gameOver && checkWin(hypotheticalScores, state.pointTarget, state.winByTwo) === state.servingTeam
-      ? state.servingTeam
-      : null
-
   return (
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
-      <div className="flex flex-col xl:flex-row gap-4 items-center justify-center">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-6 flex items-center justify-center">
-            {matchPointTeam === 0 && (
-              <span
-                className={`text-sm font-bold ${TEAM_ACCENT[0].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
-              >
-                Match Point
-              </span>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'POINT', team: 0 })}
-            disabled={state.gameOver}
-            className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
-          >
-            <StatCard
-              value={String(state.scores[0])}
-              label={labels[0]}
-              className={
-                state.servingTeam === 0
-                  ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[0].ring} ${TEAM_ACCENT[0].glow}`
-                  : ''
-              }
-            />
-          </button>
-        </div>
-
-        <div
-          className={`flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center transition-all duration-300 ${TEAM_ACCENT[state.servingTeam].border} ${TEAM_ACCENT[state.servingTeam].glow}`}
-        >
-          <span className={`text-sm font-semibold transition-colors duration-300 ${TEAM_ACCENT[state.servingTeam].text}`}>
-            {labels[state.servingTeam]}
-          </span>
-          {state.matchType === 'doubles' ? (
-            <>
-              <span className="text-7xl font-extrabold leading-none text-white">
-                {state.server}
-              </span>
-              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
-                server
-              </span>
-            </>
-          ) : (
-            <>
-              <PickleballIcon className="w-16 h-16" />
-              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
-                serving
-              </span>
-            </>
-          )}
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-6 flex items-center justify-center">
-            {matchPointTeam === 1 && (
-              <span
-                className={`text-sm font-bold ${TEAM_ACCENT[1].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
-              >
-                Match Point
-              </span>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={() => dispatch({ type: 'POINT', team: 1 })}
-            disabled={state.gameOver}
-            className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
-          >
-            <StatCard
-              value={String(state.scores[1])}
-              label={labels[1]}
-              className={
-                state.servingTeam === 1
-                  ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[1].ring} ${TEAM_ACCENT[1].glow}`
-                  : ''
-              }
-            />
-          </button>
-        </div>
-      </div>
-
-      {state.gameOver && state.winner !== null && (
-        <div
-          className={`w-full text-center py-3 rounded-lg border font-bold text-lg animate-fade-in-up transition-colors duration-300 ${TEAM_ACCENT[state.winner].bannerBg} ${TEAM_ACCENT[state.winner].border} ${TEAM_ACCENT[state.winner].text}`}
-        >
-          {labels[state.winner]} wins!
-        </div>
-      )}
+      <ScoreboardView state={state} onPoint={(team) => dispatch({ type: 'POINT', team })} />
 
       <div className="flex gap-3 w-full max-w-[420px]">
         <button
@@ -566,6 +353,20 @@ function Scorer() {
           New Game
         </button>
       </div>
+
+      {roomCode ? (
+        <LiveShare roomCode={roomCode} onStop={stopSharing} />
+      ) : isLiveSyncConfigured ? (
+        <button
+          type="button"
+          onClick={goLive}
+          className="w-full max-w-[420px] py-3 rounded-[10px] border border-lime-400/40 text-lime-300 text-sm font-semibold hover:bg-lime-500/10 active:scale-[0.98] transition-all duration-150"
+        >
+          Go live — control from this phone
+        </button>
+      ) : (
+        <LiveShare roomCode={null} onStop={stopSharing} />
+      )}
     </div>
   )
 }

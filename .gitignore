@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Firebase config / secrets - copy .env.example to .env and fill in your own
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import Scorer from './Scorer'
+import Watch from './Watch'
 
-const TABS = [{ id: 'scorer', label: 'Scorer' }] as const
+const TABS = [
+  { id: 'scorer', label: 'Scorer' },
+  { id: 'watch', label: 'Display' },
+] as const
 
 type TabId = (typeof TABS)[number]['id']
 
@@ -29,6 +33,7 @@ function App() {
 
       <main className="flex-1 flex items-center justify-center p-4">
         {activeTab === 'scorer' && <Scorer />}
+        {activeTab === 'watch' && <Watch />}
       </main>
     </div>
   )
