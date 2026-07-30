@@ -26,8 +26,8 @@ function App() {
       </AnimatePresence>
 
       <nav className="relative flex items-center gap-1 px-3 bg-black border-b border-neutral-800">
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[15px] font-bold italic tracking-wide text-neutral-100 pointer-events-none">
-          PicklePoints
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[15px] font-bold tracking-wide text-neutral-100 pointer-events-none">
+          picklepoints
         </span>
         {TABS.map((tab) => (
           <button
