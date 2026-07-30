@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ref, set } from 'firebase/database'
 import ScoreboardView from './ScoreboardView'
 import PickleballIcon from '@/components/PickleballIcon'
+import MeshBackground from './MeshBackground'
 import { database, isLiveSyncConfigured } from '@/lib/firebase'
 import { generateRoomCode } from '@/lib/roomCode'
 import {
@@ -185,6 +186,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
 
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
+      <MeshBackground colorHex={activeAccent.hex} />
       <h2
         className={`flex items-center justify-center transition-colors duration-300 ${activeAccent.text}`}
         style={{ filter: `drop-shadow(0 0 12px ${activeAccent.hex}) drop-shadow(0 0 20px ${activeAccent.hex}90)` }}
