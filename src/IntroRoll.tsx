@@ -15,7 +15,7 @@ export default function IntroRoll({ onDone }: { onDone: () => void }) {
         transition={{ duration: 1.1, ease: 'easeIn' }}
         onAnimationComplete={onDone}
       >
-        <PickleballIcon className="w-14 h-14 sm:w-20 sm:h-20" />
+        <PickleballIcon className="w-24 h-24 sm:w-36 sm:h-36" />
       </motion.div>
     </motion.div>
   )
