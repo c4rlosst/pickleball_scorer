@@ -447,25 +447,45 @@ function Scorer() {
 
   const labels = state.labels
 
+  // Only the serving team can score the next rally, so they're the only one
+  // who can be at match point.
+  const hypotheticalScores: [number, number] = [...state.scores]
+  hypotheticalScores[state.servingTeam] += 1
+  const matchPointTeam: Team | null =
+    !state.gameOver && checkWin(hypotheticalScores, state.pointTarget, state.winByTwo) === state.servingTeam
+      ? state.servingTeam
+      : null
+
   return (
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
       <div className="flex flex-col xl:flex-row gap-4 items-center justify-center">
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'POINT', team: 0 })}
-          disabled={state.gameOver}
-          className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
-        >
-          <StatCard
-            value={String(state.scores[0])}
-            label={labels[0]}
-            className={
-              state.servingTeam === 0
-                ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[0].ring} ${TEAM_ACCENT[0].glow}`
-                : ''
-            }
-          />
-        </button>
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-6 flex items-center justify-center">
+            {matchPointTeam === 0 && (
+              <span
+                className={`text-sm font-bold ${TEAM_ACCENT[0].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
+              >
+                Match Point
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'POINT', team: 0 })}
+            disabled={state.gameOver}
+            className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
+          >
+            <StatCard
+              value={String(state.scores[0])}
+              label={labels[0]}
+              className={
+                state.servingTeam === 0
+                  ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[0].ring} ${TEAM_ACCENT[0].glow}`
+                  : ''
+              }
+            />
+          </button>
+        </div>
 
         <div
           className={`flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center transition-all duration-300 ${TEAM_ACCENT[state.servingTeam].border} ${TEAM_ACCENT[state.servingTeam].glow}`}
@@ -492,22 +512,33 @@ function Scorer() {
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => dispatch({ type: 'POINT', team: 1 })}
-          disabled={state.gameOver}
-          className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
-        >
-          <StatCard
-            value={String(state.scores[1])}
-            label={labels[1]}
-            className={
-              state.servingTeam === 1
-                ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[1].ring} ${TEAM_ACCENT[1].glow}`
-                : ''
-            }
-          />
-        </button>
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-6 flex items-center justify-center">
+            {matchPointTeam === 1 && (
+              <span
+                className={`text-sm font-bold ${TEAM_ACCENT[1].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
+              >
+                Match Point
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'POINT', team: 1 })}
+            disabled={state.gameOver}
+            className="block cursor-pointer transition-transform duration-150 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-70 disabled:cursor-default disabled:hover:scale-100"
+          >
+            <StatCard
+              value={String(state.scores[1])}
+              label={labels[1]}
+              className={
+                state.servingTeam === 1
+                  ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[1].ring} ${TEAM_ACCENT[1].glow}`
+                  : ''
+              }
+            />
+          </button>
+        </div>
       </div>
 
       {state.gameOver && state.winner !== null && (
