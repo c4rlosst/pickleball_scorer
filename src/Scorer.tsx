@@ -258,12 +258,23 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   const [pointTarget, setPointTarget] = useState(11)
   const [winByTwo, setWinByTwo] = useState(true)
   const [startingServer, setStartingServer] = useState<Team>(0)
-  const [nameA, setNameA] = useState('')
-  const [nameB, setNameB] = useState('')
+  const [nameA1, setNameA1] = useState('')
+  const [nameA2, setNameA2] = useState('')
+  const [nameB1, setNameB1] = useState('')
+  const [nameB2, setNameB2] = useState('')
   const defaultLabels = TEAM_LABELS[matchType]
+  const isDoubles = matchType === 'doubles'
+
+  const combineLabel = (fallback: string, first: string, second: string) => {
+    const parts = isDoubles
+      ? [first.trim(), second.trim()].filter(Boolean)
+      : [first.trim()].filter(Boolean)
+    return parts.length > 0 ? parts.join(' & ') : fallback
+  }
+
   const labels: [string, string] = [
-    nameA.trim() || defaultLabels[0],
-    nameB.trim() || defaultLabels[1],
+    combineLabel(defaultLabels[0], nameA1, nameA2),
+    combineLabel(defaultLabels[1], nameB1, nameB2),
   ]
 
   return (
@@ -299,14 +310,36 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       </Panel>
 
       <Panel label="First Serve">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-neutral-500">{defaultLabels[0]} name</span>
-            <NameInput value={nameA} onChange={setNameA} placeholder={defaultLabels[0]} />
+            <span className="text-xs text-neutral-500">
+              {defaultLabels[0]} {isDoubles ? 'players' : 'name'}
+            </span>
+            <div className="flex flex-col gap-2">
+              <NameInput
+                value={nameA1}
+                onChange={setNameA1}
+                placeholder={isDoubles ? 'Player 1' : defaultLabels[0]}
+              />
+              {isDoubles && (
+                <NameInput value={nameA2} onChange={setNameA2} placeholder="Player 2" />
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-xs text-neutral-500">{defaultLabels[1]} name</span>
-            <NameInput value={nameB} onChange={setNameB} placeholder={defaultLabels[1]} />
+            <span className="text-xs text-neutral-500">
+              {defaultLabels[1]} {isDoubles ? 'players' : 'name'}
+            </span>
+            <div className="flex flex-col gap-2">
+              <NameInput
+                value={nameB1}
+                onChange={setNameB1}
+                placeholder={isDoubles ? 'Player 1' : defaultLabels[1]}
+              />
+              {isDoubles && (
+                <NameInput value={nameB2} onChange={setNameB2} placeholder="Player 2" />
+              )}
+            </div>
           </div>
         </div>
         <Segmented
