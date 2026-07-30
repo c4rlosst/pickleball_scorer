@@ -1,4 +1,5 @@
-import { useReducer, useState, type ReactNode } from 'react'
+import { useId, useReducer, useState, type ReactNode } from 'react'
+import { motion } from 'framer-motion'
 import StatCard from '@/components/ui/stat-card'
 
 type MatchType = 'singles' | 'doubles'
@@ -149,22 +150,36 @@ function Segmented<T extends string | number>({
   value: T
   onChange: (value: T) => void
 }) {
+  const groupId = useId()
+
   return (
     <div className="flex gap-2">
-      {options.map((option) => (
-        <button
-          key={String(option.value)}
-          type="button"
-          onClick={() => onChange(option.value)}
-          className={`flex-1 py-2.5 rounded-lg text-sm border transition-all duration-150 active:scale-[0.96] ${
-            value === option.value
-              ? 'bg-gradient-to-b from-amber-400 to-amber-600 border-amber-300 text-neutral-950 font-semibold shadow-[0_2px_12px_rgba(245,158,11,0.5)]'
-              : 'bg-gradient-to-b from-white/[0.06] to-black/40 border-white/10 text-neutral-300 shadow-inner shadow-black/40 hover:border-white/25 hover:from-white/[0.1]'
-          }`}
-        >
-          {option.label}
-        </button>
-      ))}
+      {options.map((option) => {
+        const isActive = value === option.value
+        return (
+          <button
+            key={String(option.value)}
+            type="button"
+            onClick={() => onChange(option.value)}
+            className={`relative flex-1 overflow-hidden py-2.5 rounded-lg text-sm border transition-colors duration-200 active:scale-[0.96] ${
+              isActive
+                ? 'border-amber-300 text-neutral-950 font-semibold'
+                : 'border-white/10 text-neutral-300 shadow-inner shadow-black/40 hover:border-white/25'
+            }`}
+          >
+            {isActive ? (
+              <motion.span
+                layoutId={`${groupId}-highlight`}
+                className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_2px_12px_rgba(245,158,11,0.5)]"
+                transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+              />
+            ) : (
+              <span className="absolute inset-0 bg-gradient-to-b from-white/[0.06] to-black/40" />
+            )}
+            <span className="relative z-10">{option.label}</span>
+          </button>
+        )
+      })}
     </div>
   )
 }
