@@ -1,19 +1,23 @@
 export default function PickleballIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
-      {/* handle */}
-      <rect x="38" y="52" width="14" height="30" rx="6" fill="#8a5a2b" />
-      {/* paddle face */}
-      <rect x="16" y="6" width="56" height="60" rx="26" fill="#2b2b2b" stroke="#6b6b6b" strokeWidth="3" />
-      {/* ball */}
-      <circle cx="70" cy="72" r="20" fill="#ffe600" stroke="#d9c400" strokeWidth="2" />
-      <circle cx="62" cy="64" r="2.2" fill="#d9c400" />
-      <circle cx="72" cy="60" r="2.2" fill="#d9c400" />
-      <circle cx="80" cy="68" r="2.2" fill="#d9c400" />
-      <circle cx="78" cy="80" r="2.2" fill="#d9c400" />
-      <circle cx="66" cy="82" r="2.2" fill="#d9c400" />
-      <circle cx="60" cy="74" r="2.2" fill="#d9c400" />
-      <circle cx="70" cy="72" r="2.2" fill="#d9c400" />
+      <mask id="pickleball-holes">
+        <rect width="100" height="100" fill="white" />
+        {/* center + mid dots */}
+        <circle cx="50" cy="49" r="9" fill="black" />
+        <circle cx="35" cy="68" r="8" fill="black" />
+        <circle cx="63" cy="66" r="8" fill="black" />
+        {/* ring of oval holes, tangential to the rim */}
+        <ellipse cx="50" cy="12" rx="11" ry="5.5" fill="black" transform="rotate(2 50 12)" />
+        <ellipse cx="80" cy="22" rx="11" ry="5.5" fill="black" transform="rotate(45 80 22)" />
+        <ellipse cx="90" cy="52" rx="11" ry="5.5" fill="black" transform="rotate(90 90 52)" />
+        <ellipse cx="80" cy="80" rx="11" ry="5.5" fill="black" transform="rotate(135 80 80)" />
+        <ellipse cx="49" cy="90" rx="11" ry="5.5" fill="black" transform="rotate(180 49 90)" />
+        <ellipse cx="19" cy="80" rx="11" ry="5.5" fill="black" transform="rotate(-135 19 80)" />
+        <ellipse cx="10" cy="49" rx="11" ry="5.5" fill="black" transform="rotate(90 10 49)" />
+        <ellipse cx="20" cy="20" rx="11" ry="5.5" fill="black" transform="rotate(45 20 20)" />
+      </mask>
+      <circle cx="50" cy="50" r="47" fill="currentColor" mask="url(#pickleball-holes)" />
     </svg>
   )
 }

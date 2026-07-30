@@ -80,7 +80,9 @@ export default function ScoreboardView({
             </>
           ) : (
             <>
-              <PickleballIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16" />
+              <PickleballIcon
+                className={`w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 transition-colors duration-300 ${TEAM_ACCENT[state.servingTeam].text}`}
+              />
               <span className="text-[7px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold tracking-widest text-neutral-400">serving</span>
             </>
           )}
