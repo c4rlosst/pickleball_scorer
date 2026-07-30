@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useReducer, useRef, useState, type ReactNod
 import { motion } from 'framer-motion'
 import { ref, set } from 'firebase/database'
 import ScoreboardView from './ScoreboardView'
+import PickleballIcon from '@/components/PickleballIcon'
 import { database, isLiveSyncConfigured } from '@/lib/firebase'
 import { generateRoomCode } from '@/lib/roomCode'
 import {
@@ -185,10 +186,11 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
       <h2
-        className={`text-center text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
+        className={`flex items-center justify-center gap-2 text-center text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
         style={{ textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90` }}
       >
-        "Age, is just a number. and so is the Score."
+        <PickleballIcon className="w-5 h-5 shrink-0" />
+        Age, is just a number. and so is the Score.
       </h2>
 
       <Panel label="Match Type">
