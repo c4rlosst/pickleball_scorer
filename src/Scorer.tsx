@@ -11,10 +11,20 @@ const TEAM_LABELS: Record<MatchType, [string, string]> = {
 }
 
 // Team 1 = neon orange, Team 2 = neon green (like a pickleball ball)
-const TEAM_ACCENT: [
-  { hex: string; ring: string; text: string; border: string; glow: string; bannerBg: string },
-  { hex: string; ring: string; text: string; border: string; glow: string; bannerBg: string },
-] = [
+interface TeamAccent {
+  hex: string
+  ring: string
+  text: string
+  border: string
+  glow: string
+  bannerBg: string
+  hoverBorder: string
+  hoverText: string
+  pill: string
+  pillBorder: string
+}
+
+const TEAM_ACCENT: [TeamAccent, TeamAccent] = [
   {
     hex: '#ff7a00',
     ring: 'ring-[#ff7a00]',
@@ -22,6 +32,10 @@ const TEAM_ACCENT: [
     border: 'border-[#ff7a00]/50',
     glow: 'shadow-[0_0_24px_rgba(255,122,0,0.55)]',
     bannerBg: 'bg-[#3a1a00]',
+    hoverBorder: 'hover:border-[#ff7a00]/60',
+    hoverText: 'hover:text-[#ff7a00]',
+    pill: 'bg-gradient-to-b from-[#ff9c33] to-[#ff7a00] shadow-[0_2px_16px_rgba(255,122,0,0.55)]',
+    pillBorder: 'border-[#ff7a00]',
   },
   {
     hex: '#c6ff00',
@@ -30,6 +44,10 @@ const TEAM_ACCENT: [
     border: 'border-[#c6ff00]/50',
     glow: 'shadow-[0_0_24px_rgba(198,255,0,0.55)]',
     bannerBg: 'bg-[#1f2900]',
+    hoverBorder: 'hover:border-[#c6ff00]/60',
+    hoverText: 'hover:text-[#c6ff00]',
+    pill: 'bg-gradient-to-b from-[#d8ff4d] to-[#c6ff00] shadow-[0_2px_16px_rgba(198,255,0,0.55)]',
+    pillBorder: 'border-[#c6ff00]',
   },
 ]
 
@@ -171,10 +189,12 @@ function Segmented<T extends string | number>({
   options,
   value,
   onChange,
+  pillVariants,
 }: {
   options: { value: T; label: string }[]
   value: T
   onChange: (value: T) => void
+  pillVariants?: string[]
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([])
@@ -200,7 +220,10 @@ function Segmented<T extends string | number>({
     <div ref={containerRef} className="relative flex gap-2">
       {rect && (
         <motion.div
-          className="absolute top-0 bottom-0 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_2px_12px_rgba(245,158,11,0.5)]"
+          className={`absolute top-0 bottom-0 rounded-lg transition-colors duration-300 ${
+            pillVariants?.[activeIndex] ??
+            'bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_2px_12px_rgba(245,158,11,0.5)]'
+          }`}
           animate={{ left: rect.left, width: rect.width }}
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         />
@@ -217,7 +240,7 @@ function Segmented<T extends string | number>({
             onClick={() => onChange(option.value)}
             className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm border transition-colors duration-200 active:scale-[0.96] ${
               isActive
-                ? 'border-amber-300 text-neutral-950 font-semibold'
+                ? 'text-neutral-950 font-semibold border-transparent'
                 : 'border-white/10 text-neutral-300 shadow-inner shadow-black/40 hover:border-white/25'
             }`}
           >
@@ -392,13 +415,14 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             { value: 0 as Team, label: labels[0] },
             { value: 1 as Team, label: labels[1] },
           ]}
+          pillVariants={[TEAM_ACCENT[0].pill, TEAM_ACCENT[1].pill]}
         />
       </Panel>
 
       <button
         type="button"
         onClick={() => onStart({ matchType, pointTarget, winByTwo, startingServer, labels })}
-        className="mt-2 py-4 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-neutral-950 font-bold text-lg shadow-[0_4px_24px_rgba(245,158,11,0.45)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.6)] active:scale-[0.98] transition-all duration-150"
+        className={`mt-2 py-4 rounded-xl text-neutral-950 font-bold text-lg active:scale-[0.98] transition-all duration-300 ${TEAM_ACCENT[startingServer].pill}`}
       >
         Start Game
       </button>
@@ -491,14 +515,14 @@ function Scorer() {
           type="button"
           onClick={() => dispatch({ type: 'UNDO' })}
           disabled={state.history.length === 0}
-          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-amber-400/60 hover:text-amber-400 hover:bg-neutral-800 active:scale-[0.96] disabled:opacity-50 disabled:cursor-default disabled:active:scale-100 transition-all duration-150"
+          className={`flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:bg-neutral-800 active:scale-[0.96] disabled:opacity-50 disabled:cursor-default disabled:active:scale-100 transition-all duration-150 ${TEAM_ACCENT[state.servingTeam].hoverBorder} ${TEAM_ACCENT[state.servingTeam].hoverText}`}
         >
           Undo
         </button>
         <button
           type="button"
           onClick={() => dispatch({ type: 'NEW_GAME' })}
-          className="flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:border-amber-400/60 hover:text-amber-400 hover:bg-neutral-800 active:scale-[0.96] transition-all duration-150"
+          className={`flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:bg-neutral-800 active:scale-[0.96] transition-all duration-150 ${TEAM_ACCENT[state.servingTeam].hoverBorder} ${TEAM_ACCENT[state.servingTeam].hoverText}`}
         >
           New Game
         </button>
