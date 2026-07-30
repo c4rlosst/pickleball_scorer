@@ -247,7 +247,7 @@ function Scorer() {
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
       <div className="flex flex-col sm:flex-row gap-4 flex-wrap items-center justify-center">
         {([0, 1] as const).map((team) => (
-          <div key={team} className="relative">
+          <div key={team} className="flex flex-col items-center gap-2">
             <button
               type="button"
               onClick={() => dispatch({ type: 'POINT', team })}
@@ -264,11 +264,11 @@ function Scorer() {
                 }
               />
             </button>
-            {state.servingTeam === team && (
-              <span className="absolute top-3 right-3 text-[11px] font-semibold text-amber-400 bg-black/70 px-2 py-1 rounded-full border border-amber-400/40 pointer-events-none">
-                {'\u{1F3D3}'} {state.matchType === 'doubles' ? `Server ${state.server}` : 'Serving'}
-              </span>
-            )}
+            <span className="h-6 text-sm font-semibold text-amber-400">
+              {state.servingTeam === team
+                ? `${'\u{1F3D3}'} ${state.matchType === 'doubles' ? `Server ${state.server}` : 'Serving'}`
+                : ''}
+            </span>
           </div>
         ))}
       </div>
