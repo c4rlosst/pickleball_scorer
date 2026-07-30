@@ -299,9 +299,15 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       </Panel>
 
       <Panel label="First Serve">
-        <div className="flex gap-2">
-          <NameInput value={nameA} onChange={setNameA} placeholder={defaultLabels[0]} />
-          <NameInput value={nameB} onChange={setNameB} placeholder={defaultLabels[1]} />
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-neutral-500">{defaultLabels[0]} name</span>
+            <NameInput value={nameA} onChange={setNameA} placeholder={defaultLabels[0]} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-neutral-500">{defaultLabels[1]} name</span>
+            <NameInput value={nameB} onChange={setNameB} placeholder={defaultLabels[1]} />
+          </div>
         </div>
         <Segmented
           value={startingServer}
