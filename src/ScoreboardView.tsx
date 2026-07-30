@@ -50,13 +50,13 @@ export default function ScoreboardView({
   }
 
   return (
-    <div className="w-full max-w-[680px] mx-auto flex flex-col gap-6 items-center">
-      <div className="flex flex-col xl:flex-row gap-4 items-center justify-center">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-6 flex items-center justify-center">
+    <div className="w-full max-w-[680px] mx-auto flex flex-col gap-3 sm:gap-4 md:gap-6 items-center px-1">
+      <div className="flex flex-row gap-1.5 sm:gap-3 md:gap-4 items-center justify-center">
+        <div className="flex flex-col items-center gap-1 sm:gap-2 min-w-0">
+          <div className="h-4 sm:h-5 md:h-6 flex items-center justify-center">
             {matchPointTeam === 0 && (
               <span
-                className={`text-sm font-bold ${TEAM_ACCENT[0].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
+                className={`text-[10px] sm:text-xs md:text-sm font-bold ${TEAM_ACCENT[0].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
               >
                 Match Point
               </span>
@@ -66,31 +66,31 @@ export default function ScoreboardView({
         </div>
 
         <div
-          className={`flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center transition-all duration-300 ${TEAM_ACCENT[state.servingTeam].border} ${TEAM_ACCENT[state.servingTeam].glow}`}
+          className={`flex flex-col items-center justify-center gap-0.5 sm:gap-1 w-16 h-20 sm:w-28 sm:h-32 md:w-36 md:h-40 lg:w-[160px] lg:h-[180px] rounded-lg sm:rounded-xl border bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-1 sm:px-2 md:px-3 text-center transition-all duration-300 shrink-0 ${TEAM_ACCENT[state.servingTeam].border} ${TEAM_ACCENT[state.servingTeam].glow}`}
         >
           <span
-            className={`text-sm font-semibold transition-colors duration-300 ${TEAM_ACCENT[state.servingTeam].text}`}
+            className={`text-[9px] sm:text-xs md:text-sm font-semibold transition-colors duration-300 truncate max-w-full ${TEAM_ACCENT[state.servingTeam].text}`}
           >
             {labels[state.servingTeam]}
           </span>
           {state.matchType === 'doubles' ? (
             <>
-              <span className="text-7xl font-extrabold leading-none text-white">{state.server}</span>
-              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">server</span>
+              <span className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold leading-none text-white">{state.server}</span>
+              <span className="text-[7px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold tracking-widest text-neutral-400">server</span>
             </>
           ) : (
             <>
-              <PickleballIcon className="w-16 h-16" />
-              <span className="text-[11px] font-semibold tracking-widest text-neutral-400">serving</span>
+              <PickleballIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16" />
+              <span className="text-[7px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold tracking-widest text-neutral-400">serving</span>
             </>
           )}
         </div>
 
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-6 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-1 sm:gap-2 min-w-0">
+          <div className="h-4 sm:h-5 md:h-6 flex items-center justify-center">
             {matchPointTeam === 1 && (
               <span
-                className={`text-sm font-bold ${TEAM_ACCENT[1].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
+                className={`text-[10px] sm:text-xs md:text-sm font-bold ${TEAM_ACCENT[1].text} ${state.winByTwo ? 'animate-pulse' : ''}`}
               >
                 Match Point
               </span>

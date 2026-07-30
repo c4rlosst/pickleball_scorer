@@ -10,13 +10,13 @@ export default function StatCard({ value, label, className }: StatCardProps) {
   return (
     <div
       className={cn(
-        "relative w-[300px] h-[250px] rounded-xl overflow-hidden p-[2px] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black transition-shadow duration-300 ease-out",
+        "relative w-24 h-24 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-[300px] lg:h-[250px] rounded-xl overflow-hidden p-[2px] bg-gradient-to-br from-neutral-800 via-neutral-900 to-black transition-shadow duration-300 ease-out",
         className
       )}
     >
       {/* Moving halo */}
       <motion.div
-        className="absolute w-12 h-12 rounded-full bg-white/20 blur-xl"
+        className="absolute w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full bg-white/20 blur-xl"
         animate={{
           top: ["10%", "10%", "75%", "75%", "10%"],
           left: ["10%", "80%", "80%", "10%", "10%"],
@@ -27,13 +27,13 @@ export default function StatCard({ value, label, className }: StatCardProps) {
       <div className="relative flex flex-col items-center justify-center w-full h-full rounded-lg border border-white/10 bg-gradient-to-br from-neutral-900/80 to-black/60 backdrop-blur-md">
         {/* Rotating Ray */}
         <motion.div
-          className="absolute w-[220px] h-[50px] rounded-full bg-white/10 blur-2xl"
+          className="absolute w-24 h-6 sm:w-40 sm:h-10 md:w-[180px] md:h-10 lg:w-[220px] lg:h-[50px] rounded-full bg-white/10 blur-2xl"
           animate={{ rotate: [0, 360] }}
           transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
         />
         {/* Value */}
         <motion.div
-          className="text-8xl font-extrabold bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent"
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent"
           animate={{
             textShadow: [
               "0 0 10px rgba(255,255,255,0.6)",
@@ -46,7 +46,7 @@ export default function StatCard({ value, label, className }: StatCardProps) {
           {value}
         </motion.div>
         {/* Label */}
-        <div className="mt-3 text-xl font-semibold tracking-wide text-neutral-300">{label}</div>
+        <div className="mt-1 sm:mt-2 md:mt-3 text-xs sm:text-base md:text-lg lg:text-xl font-semibold tracking-wide text-neutral-300">{label}</div>
         {/* Subtle lines */}
         <motion.div
           className="absolute top-[12%] w-[80%] h-[1px] bg-gradient-to-r from-white/30 to-transparent"
