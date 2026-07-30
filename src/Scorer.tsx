@@ -187,8 +187,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       <h2
         className={`text-center text-2xl whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
         style={{
-          fontFamily: "'Dancing Script', cursive",
-          fontWeight: 700,
+          fontFamily: "'Kaushan Script', cursive",
           textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90`,
         }}
       >
