@@ -188,7 +188,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
         className={`text-center text-sm font-semibold whitespace-nowrap transition-colors duration-300 ${activeAccent.text}`}
         style={{ textShadow: `0 0 12px ${activeAccent.hex}, 0 0 28px ${activeAccent.hex}90` }}
       >
-        "age is just a number, and so is the score."
+        "Age, is just a number. and so is the Score."
       </h2>
 
       <Panel label="Match Type">
