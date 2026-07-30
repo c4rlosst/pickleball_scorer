@@ -206,39 +206,68 @@ function Segmented<T extends string | number>({
   )
 }
 
-function NameInput({
-  value,
+function TeamNameInput({
+  names,
   onChange,
+  max,
   placeholder,
 }: {
-  value: string
-  onChange: (value: string) => void
+  names: string[]
+  onChange: (names: string[]) => void
+  max: number
   placeholder: string
 }) {
+  const [draft, setDraft] = useState('')
+
+  const commit = () => {
+    const trimmed = draft.trim()
+    if (trimmed && names.length < max) {
+      onChange([...names, trimmed])
+    }
+    setDraft('')
+  }
+
+  const remove = (index: number) => {
+    onChange(names.filter((_, i) => i !== index))
+  }
+
   return (
-    <div className="relative flex-1 min-w-0">
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.currentTarget.blur()
-          }
-        }}
-        placeholder={placeholder}
-        maxLength={20}
-        className="w-full rounded-lg border border-white/10 bg-black/40 py-2 pl-3 pr-8 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
-      />
-      {value && (
-        <button
-          type="button"
-          onClick={() => onChange('')}
-          aria-label="Clear name"
-          className="absolute right-2 top-1/2 -translate-y-1/2 flex h-4 w-4 items-center justify-center rounded-full text-neutral-500 hover:text-amber-400 transition-colors"
-        >
-          ×
-        </button>
+    <div className="flex flex-col gap-2">
+      {names.length < max && (
+        <input
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              commit()
+            }
+          }}
+          placeholder={placeholder}
+          maxLength={20}
+          className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
+        />
+      )}
+      {names.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {names.map((name, i) => (
+            <span
+              key={`${name}-${i}`}
+              className="flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-500/10 pl-3 pr-2 py-1 text-sm text-amber-300"
+            >
+              {name}
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                aria-label={`Remove ${name}`}
+                className="flex h-4 w-4 items-center justify-center rounded-full text-amber-400/70 hover:text-amber-300 transition-colors"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
       )}
     </div>
   )
@@ -258,23 +287,22 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   const [pointTarget, setPointTarget] = useState(11)
   const [winByTwo, setWinByTwo] = useState(true)
   const [startingServer, setStartingServer] = useState<Team>(0)
-  const [nameA1, setNameA1] = useState('')
-  const [nameA2, setNameA2] = useState('')
-  const [nameB1, setNameB1] = useState('')
-  const [nameB2, setNameB2] = useState('')
+  const [namesA, setNamesA] = useState<string[]>([])
+  const [namesB, setNamesB] = useState<string[]>([])
   const defaultLabels = TEAM_LABELS[matchType]
   const isDoubles = matchType === 'doubles'
+  const maxPerTeam = isDoubles ? 2 : 1
 
-  const combineLabel = (fallback: string, first: string, second: string) => {
-    const parts = isDoubles
-      ? [first.trim(), second.trim()].filter(Boolean)
-      : [first.trim()].filter(Boolean)
-    return parts.length > 0 ? parts.join(' & ') : fallback
+  const changeMatchType = (next: MatchType) => {
+    setMatchType(next)
+    const cap = next === 'doubles' ? 2 : 1
+    setNamesA((prev) => prev.slice(0, cap))
+    setNamesB((prev) => prev.slice(0, cap))
   }
 
   const labels: [string, string] = [
-    combineLabel(defaultLabels[0], nameA1, nameA2),
-    combineLabel(defaultLabels[1], nameB1, nameB2),
+    namesA.length > 0 ? namesA.join(' & ') : defaultLabels[0],
+    namesB.length > 0 ? namesB.join(' & ') : defaultLabels[1],
   ]
 
   return (
@@ -284,7 +312,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       <Panel label="Match Type">
         <Segmented
           value={matchType}
-          onChange={setMatchType}
+          onChange={changeMatchType}
           options={[
             { value: 'singles', label: 'Singles' },
             { value: 'doubles', label: 'Doubles' },
@@ -315,31 +343,23 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
             <span className="text-xs text-neutral-500">
               {defaultLabels[0]} {isDoubles ? 'players' : 'name'}
             </span>
-            <div className="flex flex-col gap-2">
-              <NameInput
-                value={nameA1}
-                onChange={setNameA1}
-                placeholder={isDoubles ? 'Player 1' : defaultLabels[0]}
-              />
-              {isDoubles && (
-                <NameInput value={nameA2} onChange={setNameA2} placeholder="Player 2" />
-              )}
-            </div>
+            <TeamNameInput
+              names={namesA}
+              onChange={setNamesA}
+              max={maxPerTeam}
+              placeholder={defaultLabels[0]}
+            />
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-xs text-neutral-500">
               {defaultLabels[1]} {isDoubles ? 'players' : 'name'}
             </span>
-            <div className="flex flex-col gap-2">
-              <NameInput
-                value={nameB1}
-                onChange={setNameB1}
-                placeholder={isDoubles ? 'Player 1' : defaultLabels[1]}
-              />
-              {isDoubles && (
-                <NameInput value={nameB2} onChange={setNameB2} placeholder="Player 2" />
-              )}
-            </div>
+            <TeamNameInput
+              names={namesB}
+              onChange={setNamesB}
+              max={maxPerTeam}
+              placeholder={defaultLabels[1]}
+            />
           </div>
         </div>
         <Segmented
