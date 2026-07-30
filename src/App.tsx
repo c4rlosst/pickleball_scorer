@@ -6,6 +6,8 @@ import About from './About'
 import Privacy from './Privacy'
 import IntroRoll from './IntroRoll'
 import { useAccent } from './AccentContext'
+import { useFullscreen } from './useFullscreen'
+import FullscreenIcon from './components/FullscreenIcon'
 
 const TABS = [
   { id: 'scorer', label: 'Scorer' },
@@ -20,6 +22,7 @@ function App() {
   const [page, setPage] = useState<Page>(null)
   const [showIntro, setShowIntro] = useState(true)
   const { accent } = useAccent()
+  const { isFullscreen, supported: fullscreenSupported, toggle: toggleFullscreen } = useFullscreen()
 
   return (
     <div className="font-sans min-h-screen flex flex-col bg-black text-neutral-100">
@@ -27,7 +30,17 @@ function App() {
         {showIntro && <IntroRoll onDone={() => setShowIntro(false)} />}
       </AnimatePresence>
 
-      <nav className="flex items-center justify-center gap-1 px-3 bg-black border-b border-neutral-800">
+      <nav className="relative flex items-center justify-center gap-1 px-3 bg-black border-b border-neutral-800">
+        {fullscreenSupported && (
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? 'Exit full screen' : 'Enter full screen'}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 active:scale-95 transition-all duration-150"
+          >
+            <FullscreenIcon active={isFullscreen} className="w-5 h-5" />
+          </button>
+        )}
         {TABS.map((tab) => (
           <button
             key={tab.id}
