@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import Scorer from './Scorer'
 import Watch from './Watch'
 import About from './About'
 import Privacy from './Privacy'
+import IntroRoll from './IntroRoll'
 
 const TABS = [
   { id: 'scorer', label: 'Scorer' },
@@ -15,9 +17,14 @@ type Page = 'about' | 'privacy' | null
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>(TABS[0].id)
   const [page, setPage] = useState<Page>(null)
+  const [showIntro, setShowIntro] = useState(true)
 
   return (
     <div className="font-sans min-h-screen flex flex-col bg-black text-neutral-100">
+      <AnimatePresence>
+        {showIntro && <IntroRoll onDone={() => setShowIntro(false)} />}
+      </AnimatePresence>
+
       <nav className="relative flex items-center gap-1 px-3 bg-black border-b border-neutral-800">
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[15px] font-bold italic tracking-wide text-neutral-100 pointer-events-none">
           PicklePoints
