@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import Scorer from './Scorer'
 import './App.css'
 
 const TABS = [
-  { id: 'hello', label: 'Hello World' },
+  { id: 'scorer', label: 'Scorer' },
 ]
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
       </nav>
 
       <main className="tab-content">
-        {activeTab === 'hello' && <h1>Hello World</h1>}
+        {activeTab === 'scorer' && <Scorer />}
       </main>
     </div>
   )
