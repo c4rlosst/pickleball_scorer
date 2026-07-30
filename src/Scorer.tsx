@@ -10,6 +10,29 @@ const TEAM_LABELS: Record<MatchType, [string, string]> = {
   doubles: ['Team A', 'Team B'],
 }
 
+// Team 1 = neon orange, Team 2 = neon green (like a pickleball ball)
+const TEAM_ACCENT: [
+  { hex: string; ring: string; text: string; border: string; glow: string; bannerBg: string },
+  { hex: string; ring: string; text: string; border: string; glow: string; bannerBg: string },
+] = [
+  {
+    hex: '#ff7a00',
+    ring: 'ring-[#ff7a00]',
+    text: 'text-[#ff7a00]',
+    border: 'border-[#ff7a00]/50',
+    glow: 'shadow-[0_0_24px_rgba(255,122,0,0.55)]',
+    bannerBg: 'bg-[#3a1a00]',
+  },
+  {
+    hex: '#c6ff00',
+    ring: 'ring-[#c6ff00]',
+    text: 'text-[#c6ff00]',
+    border: 'border-[#c6ff00]/50',
+    glow: 'shadow-[0_0_24px_rgba(198,255,0,0.55)]',
+    bannerBg: 'bg-[#1f2900]',
+  },
+]
+
 interface SetupOptions {
   matchType: MatchType
   pointTarget: number
@@ -405,13 +428,17 @@ function Scorer() {
             value={String(state.scores[0])}
             label={labels[0]}
             className={
-              state.servingTeam === 0 ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black' : ''
+              state.servingTeam === 0
+                ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[0].ring} ${TEAM_ACCENT[0].glow}`
+                : ''
             }
           />
         </button>
 
-        <div className="flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center">
-          <span className="text-sm font-semibold text-amber-400">
+        <div
+          className={`flex flex-col items-center justify-center gap-1 w-[160px] h-[180px] rounded-xl border bg-gradient-to-br from-neutral-800 via-neutral-900 to-black px-3 text-center transition-all duration-300 ${TEAM_ACCENT[state.servingTeam].border} ${TEAM_ACCENT[state.servingTeam].glow}`}
+        >
+          <span className={`text-sm font-semibold transition-colors duration-300 ${TEAM_ACCENT[state.servingTeam].text}`}>
             {labels[state.servingTeam]}
           </span>
           {state.matchType === 'doubles' ? (
@@ -443,14 +470,18 @@ function Scorer() {
             value={String(state.scores[1])}
             label={labels[1]}
             className={
-              state.servingTeam === 1 ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black' : ''
+              state.servingTeam === 1
+                ? `ring-2 ring-offset-2 ring-offset-black transition-colors duration-300 ${TEAM_ACCENT[1].ring} ${TEAM_ACCENT[1].glow}`
+                : ''
             }
           />
         </button>
       </div>
 
       {state.gameOver && state.winner !== null && (
-        <div className="w-full text-center py-3 rounded-lg bg-amber-950 border border-amber-800 text-amber-400 font-bold text-lg animate-fade-in-up">
+        <div
+          className={`w-full text-center py-3 rounded-lg border font-bold text-lg animate-fade-in-up transition-colors duration-300 ${TEAM_ACCENT[state.winner].bannerBg} ${TEAM_ACCENT[state.winner].border} ${TEAM_ACCENT[state.winner].text}`}
+        >
           {labels[state.winner]} wins!
         </div>
       )}
