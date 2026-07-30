@@ -15,6 +15,7 @@ interface SetupOptions {
   pointTarget: number
   winByTwo: boolean
   startingServer: Team
+  labels: [string, string]
 }
 
 interface Snapshot {
@@ -30,6 +31,7 @@ interface GameState extends Snapshot {
   matchType: MatchType
   pointTarget: number
   winByTwo: boolean
+  labels: [string, string]
   history: Snapshot[]
 }
 
@@ -50,11 +52,12 @@ function snapshot(state: GameState): Snapshot {
   }
 }
 
-function createGameState({ matchType, pointTarget, winByTwo, startingServer }: SetupOptions): GameState {
+function createGameState({ matchType, pointTarget, winByTwo, startingServer, labels }: SetupOptions): GameState {
   return {
     matchType,
     pointTarget,
     winByTwo,
+    labels,
     scores: [0, 0],
     servingTeam: startingServer,
     server: 2, // start-of-game exception: first serving side only gets one server turn
@@ -217,7 +220,13 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
   const [pointTarget, setPointTarget] = useState(11)
   const [winByTwo, setWinByTwo] = useState(true)
   const [startingServer, setStartingServer] = useState<Team>(0)
-  const labels = TEAM_LABELS[matchType]
+  const [nameA, setNameA] = useState('')
+  const [nameB, setNameB] = useState('')
+  const defaultLabels = TEAM_LABELS[matchType]
+  const labels: [string, string] = [
+    nameA.trim() || defaultLabels[0],
+    nameB.trim() || defaultLabels[1],
+  ]
 
   return (
     <div className="w-full max-w-[420px] mx-auto p-6 flex flex-col gap-5">
@@ -252,6 +261,24 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
       </Panel>
 
       <Panel label="First Serve">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={nameA}
+            onChange={(e) => setNameA(e.target.value)}
+            placeholder={defaultLabels[0]}
+            maxLength={20}
+            className="flex-1 min-w-0 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
+          />
+          <input
+            type="text"
+            value={nameB}
+            onChange={(e) => setNameB(e.target.value)}
+            placeholder={defaultLabels[1]}
+            maxLength={20}
+            className="flex-1 min-w-0 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
+          />
+        </div>
         <Segmented
           value={startingServer}
           onChange={setStartingServer}
@@ -264,7 +291,7 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
 
       <button
         type="button"
-        onClick={() => onStart({ matchType, pointTarget, winByTwo, startingServer })}
+        onClick={() => onStart({ matchType, pointTarget, winByTwo, startingServer, labels })}
         className="mt-2 py-4 rounded-xl bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-neutral-950 font-bold text-lg shadow-[0_4px_24px_rgba(245,158,11,0.45)] hover:shadow-[0_6px_28px_rgba(245,158,11,0.6)] active:scale-[0.98] transition-all duration-150"
       >
         Start Game
@@ -280,7 +307,7 @@ function Scorer() {
     return <Setup onStart={(setup) => dispatch({ type: 'SETUP', setup })} />
   }
 
-  const labels = TEAM_LABELS[state.matchType]
+  const labels = state.labels
 
   return (
     <div className="w-full max-w-[680px] mx-auto p-4 flex flex-col gap-6 items-center">
@@ -310,14 +337,14 @@ function Scorer() {
                 {state.server}
               </span>
               <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
-                SERVER
+                server
               </span>
             </>
           ) : (
             <>
               <span className="text-6xl leading-none">{'\u{1F3D3}'}</span>
               <span className="text-[11px] font-semibold tracking-widest text-neutral-400">
-                SERVING
+                serving
               </span>
             </>
           )}
