@@ -1,4 +1,4 @@
-import { useId, useReducer, useState, type ReactNode } from 'react'
+import { useLayoutEffect, useReducer, useRef, useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import StatCard from '@/components/ui/stat-card'
 
@@ -150,33 +150,52 @@ function Segmented<T extends string | number>({
   value: T
   onChange: (value: T) => void
 }) {
-  const groupId = useId()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([])
+  const [rect, setRect] = useState<{ left: number; width: number } | null>(null)
+  const activeIndex = options.findIndex((o) => o.value === value)
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const container = containerRef.current
+      const btn = buttonRefs.current[activeIndex]
+      if (container && btn) {
+        const containerBox = container.getBoundingClientRect()
+        const btnBox = btn.getBoundingClientRect()
+        setRect({ left: btnBox.left - containerBox.left, width: btnBox.width })
+      }
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [activeIndex, options.length])
 
   return (
-    <div className="flex gap-2">
-      {options.map((option) => {
+    <div ref={containerRef} className="relative flex gap-2">
+      {rect && (
+        <motion.div
+          className="absolute top-0 bottom-0 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_2px_12px_rgba(245,158,11,0.5)]"
+          animate={{ left: rect.left, width: rect.width }}
+          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+        />
+      )}
+      {options.map((option, i) => {
         const isActive = value === option.value
         return (
           <button
             key={String(option.value)}
+            ref={(el) => {
+              buttonRefs.current[i] = el
+            }}
             type="button"
             onClick={() => onChange(option.value)}
-            className={`relative flex-1 overflow-hidden py-2.5 rounded-lg text-sm border transition-colors duration-200 active:scale-[0.96] ${
+            className={`relative z-10 flex-1 py-2.5 rounded-lg text-sm border transition-colors duration-200 active:scale-[0.96] ${
               isActive
                 ? 'border-amber-300 text-neutral-950 font-semibold'
                 : 'border-white/10 text-neutral-300 shadow-inner shadow-black/40 hover:border-white/25'
             }`}
           >
-            {isActive ? (
-              <motion.span
-                layoutId={`${groupId}-highlight`}
-                className="absolute inset-0 bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_2px_12px_rgba(245,158,11,0.5)]"
-                transition={{ type: 'spring', stiffness: 500, damping: 32 }}
-              />
-            ) : (
-              <span className="absolute inset-0 bg-gradient-to-b from-white/[0.06] to-black/40" />
-            )}
-            <span className="relative z-10">{option.label}</span>
+            {option.label}
           </button>
         )
       })}
