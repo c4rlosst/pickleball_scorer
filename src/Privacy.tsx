@@ -14,7 +14,7 @@ export default function Privacy({ onBack }: { onBack: () => void }) {
 
       <h2 className="text-lg font-semibold text-white mt-2">What this app does</h2>
       <p>
-        Pickleball Scorer keeps score for pickleball matches locally in your browser. It does not
+        PicklePoints keeps score for pickleball matches locally in your browser. It does not
         require an account, login, or any personal information to use.
       </p>
 

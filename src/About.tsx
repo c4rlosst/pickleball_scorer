@@ -9,10 +9,10 @@ export default function About({ onBack }: { onBack: () => void }) {
         ← Back
       </button>
 
-      <h1 className="text-2xl font-bold text-white">About Pickleball Scorer</h1>
+      <h1 className="text-2xl font-bold text-white">About PicklePoints</h1>
 
       <p>
-        Pickleball Scorer is a free, no-frills scorekeeping tool for pickleball games. It follows
+        PicklePoints is a free, no-frills scorekeeping tool for pickleball games. It follows
         traditional side-out scoring rules for both singles and doubles, including the
         start-of-game exception in doubles and configurable win-by-two margins, so you don't have
         to keep score in your head or argue about whose serve it is.
