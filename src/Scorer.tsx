@@ -206,6 +206,44 @@ function Segmented<T extends string | number>({
   )
 }
 
+function NameInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (value: string) => void
+  placeholder: string
+}) {
+  return (
+    <div className="relative flex-1 min-w-0">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.currentTarget.blur()
+          }
+        }}
+        placeholder={placeholder}
+        maxLength={20}
+        className="w-full rounded-lg border border-white/10 bg-black/40 py-2 pl-3 pr-8 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          aria-label="Clear name"
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex h-4 w-4 items-center justify-center rounded-full text-neutral-500 hover:text-amber-400 transition-colors"
+        >
+          ×
+        </button>
+      )}
+    </div>
+  )
+}
+
 function Panel({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black p-4">
@@ -262,22 +300,8 @@ function Setup({ onStart }: { onStart: (setup: SetupOptions) => void }) {
 
       <Panel label="First Serve">
         <div className="flex gap-2">
-          <input
-            type="text"
-            value={nameA}
-            onChange={(e) => setNameA(e.target.value)}
-            placeholder={defaultLabels[0]}
-            maxLength={20}
-            className="flex-1 min-w-0 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
-          />
-          <input
-            type="text"
-            value={nameB}
-            onChange={(e) => setNameB(e.target.value)}
-            placeholder={defaultLabels[1]}
-            maxLength={20}
-            className="flex-1 min-w-0 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/60"
-          />
+          <NameInput value={nameA} onChange={setNameA} placeholder={defaultLabels[0]} />
+          <NameInput value={nameB} onChange={setNameB} placeholder={defaultLabels[1]} />
         </div>
         <Segmented
           value={startingServer}
