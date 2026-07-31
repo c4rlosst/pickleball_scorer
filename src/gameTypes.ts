@@ -72,6 +72,7 @@ export interface GameState extends Snapshot {
   pointTarget: number
   winByTwo: boolean
   labels: [string, string]
+  startingServer: Team
   history: Snapshot[]
 }
 
@@ -87,6 +88,7 @@ export type Action =
   | { type: 'SETUP'; setup: SetupOptions }
   | { type: 'POINT'; team: Team }
   | { type: 'UNDO' }
+  | { type: 'RESET' }
   | { type: 'NEW_GAME' }
 
 export function snapshot(state: GameState): Snapshot {
@@ -112,6 +114,7 @@ export function createGameState({
     pointTarget,
     winByTwo,
     labels,
+    startingServer,
     scores: [0, 0],
     servingTeam: startingServer,
     server: 2, // start-of-game exception: first serving side only gets one server turn
@@ -187,6 +190,20 @@ export function reducer(state: GameState | null, action: Action): GameState | nu
         ...state,
         ...prev,
         history: state.history.slice(0, -1),
+      }
+    }
+
+    case 'RESET': {
+      if (!state) return state
+      return {
+        ...state,
+        scores: [0, 0],
+        servingTeam: state.startingServer,
+        server: 2,
+        firstServeOfGame: true,
+        gameOver: false,
+        winner: null,
+        history: [],
       }
     }
 

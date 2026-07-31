@@ -367,6 +367,13 @@ function Scorer() {
         </button>
         <button
           type="button"
+          onClick={() => dispatch({ type: 'RESET' })}
+          className={`flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:bg-neutral-800 active:scale-[0.96] transition-all duration-150 ${TEAM_ACCENT[state.servingTeam].hoverBorder} ${TEAM_ACCENT[state.servingTeam].hoverText}`}
+        >
+          Reset
+        </button>
+        <button
+          type="button"
           onClick={() => dispatch({ type: 'NEW_GAME' })}
           className={`flex-1 py-3 rounded-[10px] border border-neutral-700 bg-neutral-900 text-neutral-200 text-sm hover:bg-neutral-800 active:scale-[0.96] transition-all duration-150 ${TEAM_ACCENT[state.servingTeam].hoverBorder} ${TEAM_ACCENT[state.servingTeam].hoverText}`}
         >
